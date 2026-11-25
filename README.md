@@ -20,6 +20,22 @@ ColorOS 15 的 libxposed API 100 模块。小窗收成原厂贴边图标后，�
 
 Windows 可运行 `gradlew.bat :app:assembleDebug`。APK 路径为 `app/build/outputs/apk/debug/app-debug.apk`。
 
+## 从 Tasker 直接贴边
+
+安装 0.2.0 或以上版本。在 Tasker 添加 **运行 Shell（Run Shell）** 动作，勾选 **使用 Root（Use Root）**，并粘贴以下命令。
+
+```sh
+apk=$(pm path --user current io.github.madokatext.floatwindowforeground | sed -n '1s/^package://p')
+if [ -z "$apk" ]; then
+    echo "Float Window Foreground APK is not installed" >&2
+    exit 1
+fi
+CLASSPATH="$apk" exec /system/bin/app_process /system/bin \
+    io.github.madokatext.floatwindowforeground.TaskerCommand
+```
+
+在目标应用里用 Tasker 快捷手势或按键触发。命令捕获主屏幕上当前获得焦点的应用任务。全屏任务会先通过 ColorOS 接口进入小窗，再触发原厂的小窗菜单最小化动作。已打开的小窗直接收起。输出显示 ColorOS 是否确认进入贴边状态。
+
 ## 运行方式
 
 模块按任务识别原厂贴边过渡。原厂继续创建图标、执行收起动画与还原任务。模块在图标存在期间保留任务的逻辑可见性，让 Android 自己决定 Activity 是否继续处于 `RESUMED`。任务的合成层仍隐藏，也会被排除在焦点候选之外。原厂展开、删除或淘汰图标时，模块结束这段生命周期处理。

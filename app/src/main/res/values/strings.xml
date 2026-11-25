@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="module_name">Float Window Foreground</string>
+    <string name="module_description">让 ColorOS 贴边小窗保持失焦小窗的生命周期。</string>
+</resources>
